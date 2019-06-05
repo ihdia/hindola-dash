@@ -1,6 +1,6 @@
 # Dashboard
 The dashboard used for monitoring the backend databases is Metabase. This can be downloaded [here](https://metabase.com/start/jar.html).
-The above files are related to the underlying databases present in the local server. These are the files that store all the information related to graphs,histograms,databases of the application which you are running,which are shown via the dashboard.
+The above files are related to the underlying databases present in the local server. These are the files that store all the information related to graphs,histograms,databases of the application which you are running,and are shown on the dashboard.
 
 Currently the dashboard is running on this [link](http://10.5.0.142:56000/).
 
