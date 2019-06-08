@@ -2,9 +2,8 @@
 The dashboard used for monitoring the backend databases is Metabase. This can be downloaded [here](https://metabase.com/start/jar.html).
 The above files are related to the underlying databases present in the local server. These are the files that store all the information related to graphs,histograms,databases of the application which you are running,and are shown on the dashboard.
 
-Currently the dashboard is running on this [link](http://10.5.0.142:56000/).
-
 To run Metabase, you will need to have Java8 or above install in your system. 
+
 For more information on setting up Metabse refer to this https://metabase.com/docs/latest/
 
 To run the dashboard,
