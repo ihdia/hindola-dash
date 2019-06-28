@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <!-- css -->
+  <link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700|Open+Sans:300,400,600,700" rel="stylesheet">
+  <link href="{{ url_for('static',filename='css/bootstrap.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static',filename='css/bootstrap-responsive.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static',filename='css/fancybox/jquery.fancybox.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static',filename='css/jcarousel.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static',filename='css/flexslider.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" />
+  <!-- Theme skin -->
+  <link href="{{ url_for('static',filename='skins/default.css') }}" rel="stylesheet" />
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ url_for('static',filename='ico/apple-touch-icon-144-precomposed.png') }}" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ url_for('static',filename='ico/apple-touch-icon-114-precomposed.png') }}" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ url_for('static',filename='ico/apple-touch-icon-72-precomposed.png') }}" />
+  <link rel="apple-touch-icon-precomposed" href="{{ url_for('static',filename='ico/apple-touch-icon-57-precomposed.png') }}" />
+  <link rel="shortcut icon" href="{{ url_for('static',filename='ico/favicon.png') }}" />
+
+  <!-- =======================================================
+    Theme Name: Flattern
+    Theme URL: https://bootstrapmade.com/flattern-multipurpose-bootstrap-template/
+    Author: BootstrapMade.com
+    Author URL: https://bootstrapmade.com
+  ======================================================= -->
+</head>
+
+<body>
+  <div id="wrapper">
+        <header>
+                <div class="container ">
+                  <div class="row">
+                    <div class="span4" style="text-align: center">
+                        <!-- <a href="index.html"><img src="img/logo.png" alt="" class="logo" /></a> -->
+                        <h2>Viewer</h2>
+                    </div>
+                    <div class="span8">
+                      <div class="navbar navbar-static-top">
+                        <div class="navigation">
+                          <nav>
+                            <ul class="nav topnav">
+                              <li>
+                                <a href="home.html">Home </a>
+                              </li>
+                              <li>
+                                  <a href="http://10.5.0.142:12345">Tool</a>
+                                </li>
+                                
+                              <li>
+                                  <a href="{{url_for('viewer')}}">Viewer</a>
+                                </li>
+                                
+                              <li class="dropdown">
+                                <a href="#">Analytics <i class="icon-angle-down"></i></a>
+                                <ul class="dropdown-menu">
+                                  <li><a href="http://10.5.0.142:56000/dashboard/5">Penn in Hand</a></li>
+                                  <li><a href="http://10.5.0.142:56000/dashboard/9">Bhoomi</a></li>
+                                  <li><a href="http://10.5.0.142:56000/dashboard/10">Annotations</a></li>
+                                </ul>
+                              </li>
+                              <li>
+                                  <a href="contact.html">Documentation</a>
+                                </li>
+                              <li class="dropdown">
+                                <a href="#">Others <i class="icon-angle-down"></i></a>
+                                <ul class="dropdown-menu">
+                                  <li><a href="http://10.5.0.142:9006">Raw Data</a></li>
+                                  <li><a href="http://10.5.0.142:56000/dashboard/11">Live Session</a></li>
+                                  <li><a href="http://10.5.0.142:56000">Dashboard</a></li>
+                                </ul>
+                              </li>
+                              <li>
+                                <a href="contact.html">Contact </a>
+                              </li>
+                            </ul>
+                          </nav>
+                        </div>
+                        <!-- end navigation -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </header>
+            <!-- end header -->
+    <section id="inner-headline">
+      <div class="container">
+        <div class="row">
+          <div class="span4">
+            <div class="inner-heading">
+              <h2>Annotated Images</h2>
+            </div>
+          </div>
+          <div class="span8">
+            <ul class="breadcrumb">
+              <li><a href="#"><i class="icon-home"></i></a><i class="icon-angle-right"></i></li>
+              <li><a href="#">Viewer</a><i class="icon-angle-right"></i></li>
+              <li class="active">Annotated</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <br>  
+    <style>
+        .dropbtn {
+          background-color: #252525;
+          color: white;
+          padding: 16px;
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+        }
+        
+        .dropdown {
+          position: relative;
+          display: inline-block;
+          overflow: visible;
+        }
+        
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 160px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+        
+        .dropdown-content a {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+        }
+        
+        .dropdown-content a:hover {background-color: #f1f1f1}
+        
+        .dropdown:hover .dropdown-content {
+          display: block;
+        }
+        
+        .dropdown:hover .dropbtn {
+          background-color: #252525;
+        }
+        </style>
+      <br>
+      <section>
+      <div style='width:100%;height:400px;position: relative;background-color:#252525'>
+        <img src = '{{rows[0][4]}}' id="ann" alt = "Corrupted Image" style="position:relative;min-height:25%;max-width:1000px;max-height:75%;left:15%;top:15%"/>
+        <a onclick="icon_change()" >
+          <i id="ideo" data-toggle="tooltip" title="Bookmark" class="icon-bookmark-empty" style="font-size:30px;color:#fefefe; position: absolute; top:0px;right:8px"></i>
+        </a>
+        <a onclick="prev()" data-toggle="tooltip" title="Previous"><span class="font-icon-arrow-simple-left-circle" style="font-size:40px;position: absolute; top:50%;left:8px;color:#c5c6c7"></span></a>
+        <a onclick="next()" data-toggle="tooltip" title="Next"><span class="font-icon-arrow-simple-right-circle" style="font-size:40px;position: absolute; top:50%;right:8px;color:#C5c6c7"></span></a>
+        <a onclick="first()" data-toggle="tooltip" title="Go to First"><span class="icon-double-angle-left" style="font-size:40px;position: absolute; top:89%;left:8px;color:#c5c6c7"></span></a>
+        <a onclick="last()" data-toggle="tooltip" title="Go to Last"><span class="icon-double-angle-right" style="font-size:40px;position: absolute; top:89%;right:8px;color:#C5c6c7"></span></a>
+      </div>
+    </section>
+    <script>
+      function icon_change() 
+      {
+        var d = document.getElementById("ideo");
+        d.classList.toggle('icon-bookmark');
+        d.classList.toggle('icon-bookmark-empty');
+        if (d.title == "Bookmark")
+          d.title = "Bookmarked";
+        else
+          d.title = "Bookmark";
+      }
+
+      var rows = {{rows|tojson|safe}};
+      var i = 0;
+      var socket = io.connect('http://10.5.0.142:10000/');
+      socket.on('connect', function() {
+              socket.emit('myconnection','is connected');
+            });
+      function last()
+      {
+        i = rows.length - 1;
+        var d = document.getElementById("ann");
+        d.src = rows[i][4];
+      }
+      function first()
+      {
+        i = 0;
+        var d = document.getElementById("ann");
+        d.src = rows[i][4];
+      }
+      function prev()
+      {
+        if (i > 0) {
+          i = i - 1;
+        }
+        var d = document.getElementById("ann");
+        d.src = rows[i][4];
+      }
+      function next()
+      {
+        if(i < rows.length)
+        {
+          i = i + 1;
+        }
+        var d = document.getElementById("ann");
+        d.src = rows[i][4];
+      }
+    document.querySelector('#ideo').addEventListener('click', icon_change);
+    $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+    </script>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="span3">
+            <div class="widget">
+              <h5 class="widgetheading">Browse pages</h5>
+              <ul class="link-list">
+                <li><a href="#">About our company</a></li>
+                <li><a href="#">Our services</a></li>
+                <li><a href="#">Meet our team</a></li>
+                <li><a href="#">Explore our portfolio</a></li>
+                <li><a href="#">Get in touch with us</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="span3">
+            <div class="widget">
+              <h5 class="widgetheading">Important stuff</h5>
+              <ul class="link-list">
+                <li><a href="#">Press release</a></li>
+                <li><a href="#">Terms and conditions</a></li>
+                <li><a href="#">Privacy policy</a></li>
+                <li><a href="#">Career center</a></li>
+                <li><a href="#">Flattern forum</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="span3">
+            <div class="widget">
+              <h5 class="widgetheading">Flickr photostream</h5>
+              <div class="flickr_badge">
+                <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=8&amp;display=random&amp;size=s&amp;layout=x&amp;source=user&amp;user=34178660@N03"></script>
+              </div>
+              <div class="clear">
+              </div>
+            </div>
+          </div>
+          <div class="span3">
+            <div class="widget">
+              <h5 class="widgetheading">Get in touch with us</h5>
+              <address>
+								<strong>Flattern studio, Pte Ltd</strong><br>
+								 Springville center X264, Park Ave S.01<br>
+								 Semarang 16425 Indonesia
+					 		</address>
+              <p>
+                <i class="icon-phone"></i> (123) 456-7890 - (123) 555-7891 <br>
+                <i class="icon-envelope-alt"></i> email@domainname.com
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="sub-footer">
+        <div class="container">
+          <div class="row">
+            <div class="span6">
+              <div class="copyright">
+                <p>
+                  <span>&copy; Flattern - All right reserved.</span>
+                </p>
+                <div class="credits">
+                  <!--
+                    All the links in the footer should remain intact.
+                    You can delete the links only if you purchased the pro version.
+                    Licensing information: https://bootstrapmade.com/license/
+                    Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Flattern
+                  -->
+                  Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                </div>
+              </div>
+            </div>
+            <div class="span6">
+              <ul class="social-network">
+                <li><a href="#" data-placement="bottom" title="Facebook"><i class="icon-facebook icon-square"></i></a></li>
+                <li><a href="#" data-placement="bottom" title="Twitter"><i class="icon-twitter icon-square"></i></a></li>
+                <li><a href="#" data-placement="bottom" title="Linkedin"><i class="icon-linkedin icon-square"></i></a></li>
+                <li><a href="#" data-placement="bottom" title="Pinterest"><i class="icon-pinterest icon-square"></i></a></li>
+                <li><a href="#" data-placement="bottom" title="Google plus"><i class="icon-google-plus icon-square"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <a href="#" class="scrollup"><i class="icon-chevron-up icon-square icon-32 active"></i></a>
+  <!-- javascript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery.easing.1.3.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/jcarousel/jquery.jcarousel.min.js"></script>
+  <script src="js/jquery.fancybox.pack.js"></script>
+  <script src="js/jquery.fancybox-media.js"></script>
+  <script src="js/google-code-prettify/prettify.js"></script>
+  <script src="js/portfolio/jquery.quicksand.js"></script>
+  <script src="js/portfolio/setting.js"></script>
+  <script src="js/jquery.flexslider.js"></script>
+  <script src="js/jquery.nivo.slider.js"></script>
+  <script src="js/modernizr.custom.js"></script>
+  <script src="js/jquery.ba-cond.min.js"></script>
+  <script src="js/jquery.slitslider.js"></script>
+  <script src="js/animate.js"></script>
+
+  <!-- Template Custom JavaScript File -->
+  <script src="js/custom.js"></script>
+
+</body>
+
+</html>

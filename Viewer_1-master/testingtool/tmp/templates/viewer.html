@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--css-->
+    <link href="{{ url_for('static',filename='css/bootstrap.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" />
+<!--end of css-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+</head>
+<body style="background:rgba(0,0,0)">
+    <br>
+    <br>
+    <br>
+    <section>
+            <div style="width:78%;display: inline-block">
+                </div>
+        <div style="display:inline-block">
+            <a style="color:cornsilk;font-size: 17px;text-decoration: none" href="{{url_for('ann')}}">Annotated</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a style="color:cornsilk;font-size: 17px;text-decoration: none" href="{{url_for('unann')}}">Unannotated</a>
+        </div>
+    </section>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <section>
+            <div style="width:38%;display: inline-block"></div>
+            <div style="display: inline-block">
+                <p style="font-size: 45px;color:aliceblue;text-align: center;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">
+This is the <i>Viewer</i> for viewing the
+<a style="text-decoration: none" href="{{url_for('ann')}}"><i>Annotated</i></a> and 
+<a style="text-decoration: none" href="{{url_for('unann')}}"><i>Unannotated </i></a>
+images present in the server.</p></div>
+    </section>
+        <!-- <div class="button" style="margin-left: 40%"><a href="{{url_for('ann')}}" data-toggle="tooltip" title="Home"><button class="btn btn-large btn-info ">Annotated</button></a></div>
+        <br>
+        <div class="button" style="margin-left: 40%"><a href="{{url_for('unann')}}" data-toggle="tooltip" title="Home"><button class="btn btn-large btn-info ">Unannotated</button></a></div> -->
+ </body>

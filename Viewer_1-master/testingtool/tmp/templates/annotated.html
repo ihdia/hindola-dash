@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Annotated</title>
+    <link rel = "icon" href =  "{{ url_for('static',filename='img/l.png') }}" type = "image/x-icon"> 
+    <!--css-->
+    <link href="{{ url_for('static',filename='css/bootstrap.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" />
+<!--end of css-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+</head>
+<body background="{{ url_for('static',filename='img/bg.png') }}" style="background-size: cover;font-family:'Courier New', Courier, monospace ">
+        <section id="inner-headline" style="background: rgba(0,0,0,0.8)">
+                <div class="container">
+                  <div class="row">
+                    <div>
+                      <div class="inner-heading">
+                        <h2>Annotated Images</h2>
+                      </div>
+                    </div>
+                    <div class="span8">
+                      <ul class="breadcrumb" style="background-color: #252525">
+                        <li><a href="{{ url_for('viewer') }}"><i class="icon-home"></i></a><i class="icon-angle-right"></i></li>
+                        <li><a href="#">Annotated</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="container" style="max-width: 250px;left:5%;display: inline-block">
+                <!-- <h2>Users</h2> -->
+                <form>
+                  <div class="form-group">
+                    <select class="form-control" id="sel" onclick="func()">
+                        <option disabled selected> Users</option>
+                        {% for i in range(no_users) %}
+                        <option value = "{{i}}">
+                            {{users[i][-1]}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                </form>
+                </div>
+                <div class="container" style="max-width: 250px;left:5%;display: inline-block;">
+                <!-- <h2>Users</h2> -->
+                <form>
+                  <div class="form-group">
+                    <select class="form-control" id="sel1" onclick="func()">
+                        <option disabled selected>Databases</option>
+                        <option value = "{{i}}">Bhoomi</option>
+                        <option value = "{{i}}">PIH</option>
+                    </select>
+                    </div>
+                </form>
+                </div>
+                <div class="container" style="max-width: 250px;left:5%;display: inline-block;">
+                    <form>
+                      <div class="form-group">
+                        <select class="form-control" id="sel2" onclick="func()">
+                            <option disabled selected>Language</option>
+                        <option value = "{{i}}">Bengali</option>
+                        <option value = "{{i}}">DN</option>
+                        <option value = "{{i}}">GR</option>
+                        <option value = "{{i}}">Hindi</option>
+                        <option value = "{{i}}">Sanskrit</option>
+                        <option value = "{{i}}">TL</option>
+                        </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="container" style="max-width: 250px;left:5%;display: inline-block;">
+                    <form>
+                      <div class="form-group">
+                        <select class="form-control" id="sel3" onclick="func()">
+                            <option disabled selected>Time Taken</option>
+                        <option value = "{{i}}">0-5 Mins</option>
+                        <option value = "{{i}}">5-10 Mins</option>
+                        <option value = "{{i}}">10-15 Mins</option>
+                        <option value = "{{i}}">15-20 Mins</option>
+                        <option value = "{{i}}">20-25 Mins</option>
+                        <option value = "{{i}}">>25 Mins</option>
+                        </select>
+                        </div>
+                    </form>
+                </div>
+              
+            </section>
+            <section style="background: rgba(0,0,0,0)">
+                <h2 style="color: rgba(239, 244, 248);text-align: center">Gallery Viewer</h2>
+                <p style="color: rgba(239, 244, 248);text-align: center">Images can be bookmarked for correction using
+                    the bookmark icon present below this. Once bookmarked it can't be reverted back. 
+                    However once an image is bookmarked it is assigned for priority correction.</p>
+            </section>
+        <section style="background: rgba(0,0,0,0.55)">
+            <div id="delete">
+            </div>
+                <div class="alert alert-info alert-dismissible" id = "faded" style="display: none;max-width:600px;">
+                        <strong>Sorry!</strong> No image available. Try another.
+                </div>
+            <div style='width:100%;height:400px;position: relative;'>
+                <canvas id="ann" alt = "Corrupted Image" style="position:relative;min-height:25%;max-width:1000px;max-height:75%;left:15%;top:15%"></canvas>
+                <a onclick="bookmark_func()">
+                  <i id="ideo" data-toggle="tooltip" title="Bookmark" class="icon-bookmark-empty" style="font-size:35px;color:#66fcf1; position: absolute; top:0px;right:8px"></i>
+                </a>
+                <a onclick="prev()" data-toggle="tooltip" title="Previous"><span class="font-icon-arrow-simple-left-circle" style="font-size:45px;position: absolute; top:50%;left:8px;color:#66fcf1"></span></a>
+                <a onclick="next()" data-toggle="tooltip" title="Next"><span class="font-icon-arrow-simple-right-circle" style="font-size:45px;position: absolute; top:50%;right:8px;color:#66fcf1"></span></a>
+                <!-- <a onclick="first()" data-toggle="tooltip" title="Go to First"><span class="icon-double-angle-left" style="font-size:40px;position: absolute; top:89%;left:8px;color:#c5c6c7"></span></a> -->
+                <!-- <a onclick="last()" data-toggle="tooltip" title="Go to Last"><span class="icon-double-angle-right" style="font-size:40px;position: absolute; top:89%;right:8px;color:#C5c6c7"></span></a> -->
+              </div>
+        </section>
+        <section id="inner-headline">
+            <br>
+            <p style="color: rgba(239, 244, 248);text-align: center">The bookmarked images will be added to
+            the correction list and will be sent for correcting. However if you want to delete all the bookmarked
+        images,<b>press the button below</b>.</p>
+            <section>
+                <div style="display: inline-block;width:41%"></div>
+                <button type="button" class="btn" style="background-color:#c7303f;color:cornsilk;
+                display: inline-block;" onclick="remove()">Remove all Bookmarks</button>
+		 <button type="button" class="btn" style="background-color:#c7303f;color:cornsilk;
+                display: inline-block;" onclick="save()">Save all bookmarks</button>
+
+              </section>
+        </section>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io.connect('http://10.5.0.142:20000/');
+        var rows = {{rows|tojson|safe}};
+        var i = 0;  
+        var b=[];
+        var l=[];
+        var savelink = "";
+        socket.on('connect', function() {
+            socket.emit('myevent','I\'m connected!');
+        });
+        function save()
+	{
+		alert("Want to save all bookmarks");
+	}
+        function remove()
+        {
+            alert("Deletion of bookmarks complete");
+            socket.emit('remove_corrections');   
+        }
+        var d = document.getElementById('sel');
+        var e = document.getElementById('sel1');
+        var f = document.getElementById('sel2');
+        var g = document.getElementById("sel3");
+        function func(){
+            // socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text));
+            i = 0;
+            var f = document.getElementById("ideo");
+            f.className = 'icon-bookmark-empty';
+            if(String(d.options[d.selectedIndex].text) == "Users")
+            {
+                socket.emit('fetchjsonfile',0,String(e.options[e.selectedIndex].text),i);
+                 console.log(d.options[d.selectedIndex].text,String(e.options[e.selectedIndex].text),i);
+            }
+            else if(String(e.options[e.selectedIndex].text) == "Databases")
+            {
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),0,i);
+                 console.log(e.options[e.selectedIndex].text);
+            }
+            else if(String(f.options[f.selectedIndex].text) == "Language"){
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),String(e.options[e.selectedIndex].text),i);
+                console.log(d.options[d.selectedIndex].text,String(e.options[e.selectedIndex].text),String(f.options[f.selectedIndex].text));
+            }
+            else
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),String(e.options[e.selectedIndex].text),i+f.selectedIndex);
+             console.log(d.options[d.selectedIndex].text,String(e.options[e.selectedIndex].text),String(f.options[f.selectedIndex].text));
+        }
+
+        socket.on('fetchJson',function(data){
+            if(data != "none")
+            {
+                var e = document.getElementById('delete');
+                e.style.display = 'inline-block';
+                var d= document.getElementById('faded');
+                d.style.display = 'none';
+
+                var json_data = JSON.parse(data);
+                var context = 0;
+                var link = json_data._via_img_metadata;
+                console.log(link)
+                var ct = 1;
+                for(var key in link)
+                {
+                    if(link.hasOwnProperty(key)){
+                        var val = link[key];
+                        var file = val.filename;
+                        savelink = val.filename;
+                        var image = document.createElement("IMG");
+                        // var image = document.getElementById("ann");
+                        image.src = file;
+                        image.onload = function(){
+                        var val = link[key];
+                        var filename     = val.filename;
+                        var canvas = document.getElementById("ann");
+                        canvas.style.display = 'block';
+                        // var canvas = document.createElement("canvas");
+                        // document.body.appendChild(canvas);
+                        // console.log(image);
+                        canvas.width  = image.width;
+                        canvas.height = image.height;
+                        context = canvas.getContext("2d");
+                        context.drawImage(image, 0, 0);
+                        var regions = val.regions;
+                        // console.log(regions);
+                       // context.strokeStyle = "#ff0000";
+                        context.lineWidth = 2;
+                        for (var key1 in regions) {
+                            if (regions.hasOwnProperty(key1)) {
+                                var val = regions[key1].shape_attributes;
+                                var x = val.all_points_x;
+                                var y = val.all_points_y;
+                                var poly = [];
+                                var label_1=regions[key1].region_attributes;
+                                var label=label_1["Spatial Annotation"]
+                                if(label=="Hole(Virtual)"){
+                                    context.strokeStyle="#ff0000";
+                                }
+                                if(label=="Hole(Physical)"){
+                                    context.strokeStyle="#228b22";
+                                }
+                                if(label=="Character Component"){
+                                    context.strokeStyle="#0000ff";
+                                }
+                                if(label=="Character Line Segment"){
+                                    context.strokeStyle="#800000";
+                                }
+                                if(label=="Boundary Line"){
+                                    context.strokeStyle="#ff8c00";
+                                }
+                                if(label=="Picture"){
+                                    context.strokeStyle="#8b008b";
+                                }
+                                if(label=="Physical Degradation"){
+                                    context.strokeStyle="#3cb371";
+                                }
+                                if(label=="Page Boundary"){
+                                    context.strokeStyle="#2f4f4f";
+                                }
+                                if(label=="Decorator"){
+                                    context.strokeStyle="#800080";
+                                }
+                                if(label=="Library Marker"){
+                                    context.strokeStyle="#4b0082";
+                                }
+                                for(var j = 0; j < x.length; j++)
+                                {
+                                    poly.push(x[j]);
+                                    poly.push(y[j]);
+                                }
+                                context.beginPath();
+                                context.moveTo(poly[0], poly[1]);
+                                for( item=2 ; item < poly.length-1 ; item+=2 ){
+                                    context.lineTo( poly[item] , poly[item+1] );
+                                    
+                                }
+                                context.closePath();
+                                context.stroke();
+                            }
+                            }
+                        // console.log(image.src);
+                    }
+                }
+            }
+            }
+            else
+            {
+                var e = document.getElementById('delete');
+                e.style.display = 'none';
+                var d= document.getElementById('faded');
+                d.style.display = 'inline-block';
+                var canvas = document.getElementById("ann");
+                canvas.style.display = 'none';
+            }
+        });   
+        
+        function icon_change() 
+        {
+            var d = document.getElementById("ideo");
+            // d.classList.toggle("fa fa-thumbs-o-down");
+            // d.classList.toggle("fa fa-thumbs-o-down");
+            d.classList.toggle("icon-bookmark");
+            d.classList.toggle("icon-bookmark-empty");
+            if (d.title == "Bookmark")
+            {
+                d.title = "Bookmarked";
+            }
+            else if (d.title == "Bookmarked")            
+            {
+                d.title = "Bookmark";
+            }
+        }
+        function bookmark_func()
+        {
+            icon_change();
+            if(b[i]==1){
+                b[i]=0;
+            }
+            else{
+                b[i]=1;    
+            }
+            socket.emit('correct_image',savelink);
+        }
+        function prev()
+        {
+            var f = document.getElementById("ideo");
+            if (i > 0) {
+            i = i - 1;
+            }
+            l.push(i);
+            if(b[i]==1 && l.indexOf(i)>=0){
+                f.className = 'icon-bookmark';
+                f.title="Bookmarked";
+            }
+            else{
+                f.className = 'icon-bookmark-empty';
+                f.title="Bookmark";
+            }
+            if(String(d.options[d.selectedIndex].text) == "Users")
+            {
+                socket.emit('fetchjsonfile',0,String(e.options[e.selectedIndex].text),i);
+                // console.log(d.options[d.selectedIndex].text);
+            }
+            else if(String(e.options[e.selectedIndex].text) == "Databases")
+            {
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),0,i);
+                // console.log(e.options[e.selectedIndex].text);
+            }
+            else
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),String(e.options[e.selectedIndex].text),i);
+        }
+        function next()
+        {
+            var f = document.getElementById("ideo");
+            if(i < rows.length)
+            {
+            i = i + 1;
+            }
+            l.push(i);
+            if(b[i]==1 && l.indexOf(i)>=0){
+                f.className = 'icon-bookmark';
+                f.title="Bookmarked";
+            }
+            else{
+                f.className = 'icon-bookmark-empty';
+                f.title="Bookmark";
+            }
+            // console.log(i);
+            if(String(d.options[d.selectedIndex].text) == "Users")
+            {
+                socket.emit('fetchjsonfile',0,String(e.options[e.selectedIndex].text),i);
+                // console.log(d.options[d.selectedIndex].text);
+            }
+            else if(String(e.options[e.selectedIndex].text) == "Databases")
+            {
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),0,i);
+                // console.log(e.options[e.selectedIndex].text);
+            }
+            else
+                socket.emit('fetchjsonfile',String(d.options[d.selectedIndex].text),String(e.options[e.selectedIndex].text),i);
+        }
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body> 
+</html>

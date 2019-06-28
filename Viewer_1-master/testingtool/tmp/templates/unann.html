@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Unannotated</title>
+        <link rel = "icon" href =  "{{ url_for('static',filename='img/l.png') }}" type = "image/x-icon"> 
+        <!--css-->
+        <link href="{{ url_for('static',filename='css/bootstrap.css') }}" rel="stylesheet" />
+        <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" />
+    <!--end of css-->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    </head>
+    <body background="{{ url_for('static',filename='img/bg.png') }}" style="background-size: cover;font-family:'Courier New', Courier, monospace ">
+            <section id="inner-headline" style="background: rgba(0,0,0,0.8)">
+                    <div class="container">
+                      <div class="row">
+                        <div>
+                          <div class="inner-heading">
+                            <h2>Unannotated Images</h2>
+                          </div>
+                        </div>
+                        <div class="span8">
+                          <ul class="breadcrumb" style="background-color: #252525">
+                            <li><a href="{{ url_for('viewer') }}"><i class="icon-home"></i></a><i class="icon-angle-right"></i></li>
+                            <li><a href="{{ url_for('unann') }}"><b>Unannotated</b></a><i class="icon-angle-right"></i></li>
+                            <li><a href="{{ url_for('bookmark') }}">Bookmarked</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="container" style="max-width: 250px;left:5%;display: inline-block;">
+                    <!-- <h2>Users</h2> -->
+                    <form>
+                      <div class="form-group">
+                        <select class="form-control" id="sel" onclick="func()">
+                            <option disabled selected>Databases</option>
+                            <option value = "{{i}}">Bhoomi</option>
+                            <option value = "{{i}}">PIH</option>
+                        </select>
+                        </div>
+                    </form>
+                    </div>
+                    <div class="container" style="max-width: 250px;left:5%;display: inline-block;">
+                            <form>
+                              <div class="form-group">
+                                <select class="form-control" id="sel1" onclick="func()">
+                                    <option disabled selected>Language</option>
+                                <option value = "{{i}}">Bengali</option>
+                                <option value = "{{i}}">DN</option>
+                                <option value = "{{i}}">GR</option>
+                                <option value = "{{i}}">Hindi</option>
+                                <option value = "{{i}}">Sanskrit</option>
+                                <option value = "{{i}}">TL</option>
+                                </select>
+                                </div>
+                            </form>
+                            </div>
+                    
+                </section>
+                <section style="background: rgba(0,0,0,0)">
+                    <h2 style="color: rgba(239, 244, 248);text-align: center">Gallery Viewer</h2>
+                    <p style="color: rgba(239, 244, 248);text-align: center">Images can be bookmarked for correction using
+                        the bookmark icon present below this. Once bookmarked it can't be reverted back. 
+                        However once an image is bookmarked it is assigned for priority correction.</p>
+                </section>
+          <section style="background: rgba(0,0,0,0.55)">
+            <div style='width:100%;height:400px;position: relative;'>
+              <img src = '{{rows[1][4]}}' id="ann" alt = "Corrupted Image" style="position:relative;min-height:25%;max-width:1000px;max-height:75%;left:15%;top:15%"/>
+              <a onclick="bookmark_func()">
+                <i id="ideo" data-toggle="tooltip" title="Bookmark" class="icon-bookmark-empty" style="font-size:35px;color:#66fcf1; position: absolute; top:0px;right:8px"></i>
+              </a>
+              <a onclick="prev()" data-toggle="tooltip" title="Previous"><span class="font-icon-arrow-simple-left-circle" style="font-size:40px;position: absolute; top:50%;left:8px;color:#66fcf1"></span></a>
+              <a onclick="next()" data-toggle="tooltip" title="Next"><span class="font-icon-arrow-simple-right-circle" style="font-size:40px;position: absolute; top:50%;right:8px;color:#66fcf1"></span></a>
+              <a onclick="first()" data-toggle="tooltip" title="Go to First"><span class="icon-double-angle-left" style="font-size:40px;position: absolute; top:89%;left:8px;color:#66fcf1"></span></a>
+              <a onclick="last()" data-toggle="tooltip" title="Go to Last"><span class="icon-double-angle-right" style="font-size:40px;position: absolute; top:89%;right:8px;color:#66fcf1"></span></a>
+            </div>
+        </section>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io.connect('http://10.5.0.142:20000/');
+        var rows = {{rows|tojson|safe}};
+        var i = 0;  
+        var links=[];
+        var b=[];
+        socket.on('connect', function() {
+            socket.emit('myevent','I\'m connected!');
+        });
+        var d = document.getElementById('sel');
+        var e = document.getElementById('sel1');
+        function func()
+        {
+            if(String(e.options[e.selectedIndex].text) == "Language")
+            {
+                socket.emit('filter_image',String(d.options[d.selectedIndex].text),0);
+                // console.log(d.options[d.selectedIndex].text);
+            }
+            else if(String(d.options[d.selectedIndex].text) == "Databases")
+            {
+              socket.emit('filter_image',0,e.selectedIndex);
+                // console.log(d.options[d.selectedIndex].text);
+            }
+            else
+            {
+              socket.emit('filter_image',String(d.options[d.selectedIndex].text),e.selectedIndex);
+            }
+        }
+
+        socket.on('change_image',function(data){
+          i = 0;
+          console.log(data[0]);
+          var d = document.getElementById("ann");
+          d.src = data[0][0];
+          for(var j=0;j<data.length;j++)
+            rows[j][4] = data[j][0];
+          rows[rows.length-1][4] = data[data.length-1][0]
+        });
+
+        function icon_change() 
+        {
+            var d = document.getElementById("ideo");
+            d.classList.toggle('icon-bookmark');
+            d.classList.toggle('icon-bookmark-empty');
+            if (d.title == "Bookmark")
+            {
+                d.title = "Bookmarked";
+            }
+            else if (d.title == "Bookmarked")            
+            {
+                d.title = "Bookmark";
+            }
+        }
+        function bookmark_func()
+        {
+            icon_change();
+            if(b[i]==1){
+                b[i]=0;
+            }
+            else{
+                b[i]=1;    
+            }
+            
+            socket.emit('bookmark_image',rows[i]);
+        }
+        function last()
+        {
+            i = rows.length - 1;
+            var d = document.getElementById("ann");
+            d.src = rows[i][4];
+            if(links.indexOf(d.src)>=0 && b[i]==1){
+                e.className="icon-bookmark";
+                e.title="Bookmarked";
+                console.log(i,b[i]);
+            }
+            else{
+                e.className="icon-bookmark-empty";
+                e.title="Bookmark"; 
+            }
+            links.push(d.src);
+        }
+        function first()
+        {
+            i = 0;
+            var d = document.getElementById("ann");
+            d.src = rows[i][4];
+            if(links.indexOf(d.src)>=0 && b[i]==1){
+                e.className="icon-bookmark";
+                e.title="Bookmarked";
+                console.log(i,b[i]);
+            }
+            else{
+                e.className="icon-bookmark-empty";
+                e.title="Bookmark"; 
+            }
+            links.push(d.src);
+        }
+        function prev()
+        {
+            var e = document.getElementById("ideo");
+            
+            if (i > 0) {
+            i = i - 1;
+            }
+            var d = document.getElementById("ann");
+            d.src = rows[i][4];
+            if(links.indexOf(d.src)>=0 && b[i]==1){
+                e.className="icon-bookmark";
+                e.title="Bookmarked";
+            }
+            else{
+                e.className="icon-bookmark-empty";
+                e.title="Bookmark"; 
+            }
+            links.push(d.src);
+            console.log(rows[i][4]);
+
+        }
+        function next()
+        {
+            var e = document.getElementById("ideo");
+            e.className = 'icon-bookmark-empty';
+            if(i < rows.length)
+            {
+            i = i + 1;
+            }
+            var d = document.getElementById("ann");
+            d.src = rows[i][4];
+            if(links.indexOf(d.src)>=0 && b[i]==1){
+                e.className="icon-bookmark";
+                e.title="Bookmarked";
+            }
+            else{
+                e.className="icon-bookmark-empty";
+                e.title="Bookmark"; 
+            }
+            links.push(d.src);
+            //console.log(rows[i][4]);
+        }
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body> 
+</html>

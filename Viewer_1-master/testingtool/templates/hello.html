@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+
+<input type = "text">
+<button id = "send">Send</button>
+<p id = "display">Annotated</p>
+
+<script>
+  $(document).ready(function()
+  {
+    var soc = io.connect('http://10.5.0.142:20000/');
+    socket.on('connect',function(){
+      socket.send("User connected");
+    });
+  });
+</script>
+</body>
+</html>
