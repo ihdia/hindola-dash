@@ -16,3 +16,9 @@ But this will start the server on the default port:3000, to change port to say '
 
 By default the server starts as localhost i.e., 127.0.0.1, to change that run the command
 'export MB_JETTY_HOST=yourIP' before starting the dashboard.
+
+# Viewer
+This is the site for viewing the Annotated, the Unannotated and the Bookmarked images.
+
+The instructions for setting up the viewer are provided in the link https://github.com/ihdia/hindola-dash/tree/master/Viewer_1-master
+
