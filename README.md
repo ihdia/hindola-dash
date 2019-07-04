@@ -22,3 +22,5 @@ This is the site for viewing the Annotated, the Unannotated and the Bookmarked i
 
 The instructions for setting up the viewer are provided in the link https://github.com/ihdia/hindola-dash/tree/master/Viewer_1-master
 
+### Videos
+Dashboard -  https://tinyurl.com/hindola-v1-dashbrd
