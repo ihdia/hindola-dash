@@ -333,7 +333,7 @@ def update_output(col_name):
 
 fig_annotaters_dial = go.Figure()
 num_users = sql.get_num_users()
-num_annotated_pages = sql.get_pages_annotated()
+num_annotated_pages = sql.users_annot_count()[0]
 # Collections
 fig_annotaters_dial.add_trace(
     go.Indicator(
@@ -360,6 +360,8 @@ fig_annotaters_dial.add_trace(
 
 fig_annotaters_dial.update_layout(
     grid = {'rows': 1, 'columns': 3, 'pattern': "independent"})
+users_list = sql.getUsers()
+users_info_annotated , users_info_served = sql.all_users_info()
 annotatorsApp.layout = html.Div([
 
     html.H3('General User Stats:'),
@@ -370,8 +372,53 @@ annotatorsApp.layout = html.Div([
         figure=fig_annotaters_dial
     )
     ]),
+    html.Div([
+        dcc.Dropdown(
+            id = 'user_annot_details',
+            options = [{'label': i, 'value': i} for i in users_list],
+            value = list(users_list)[0],
+            # style={'width':'50%'}
+        )
+    ]), 
+    html.Div([
+        dcc.Graph(
+        id='usr_annot',
+        
+    )
+    ])
 
 ])
+@annotatorsApp.callback(
+    Output(component_id='usr_annot', component_property='figure'),
+    Input(component_id='user_annot_details', component_property='value')
+)
+
+def update_output(user_name):
+    # all_users_info()
+    fig = go.Figure()
+    user_name = user_name.lower()
+    num_annotated_pages = users_info_annotated[user_name]
+    num_served = users_info_served[user_name]
+    # Collections
+    fig.add_trace(
+        go.Indicator(
+        mode = "number",
+        value = num_annotated_pages,
+        title = {'text':'Pages Annotated'},
+        domain = {'row': 0, 'column': 0}
+    ))
+    fig.add_trace(
+        go.Indicator(
+        mode = "number",
+        value = num_served,
+        title = {'text':'Pages Served'},
+        domain = {'row': 0, 'column': 1}
+    ))
+
+
+    fig.update_layout(
+        grid = {'rows': 1, 'columns': 2, 'pattern': "independent"})
+    return fig
 
 @server.route('/')
 def index():

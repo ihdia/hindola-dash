@@ -11,7 +11,7 @@ import numpy as np
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="Bvkvana1",
+  password="root",
   port="3306",
   database="hindola"
 )
@@ -23,6 +23,15 @@ def getUsers():
     users = []
     for x in mycursor:
         if x[2].lower() not in users:
+            users.append(x[2])
+    return users
+
+def getRawUsers():
+    mycursor = mydb.cursor()
+    mycursor.execute('Select * From users')
+    users = []
+    for x in mycursor:
+        if x[2] not in users:
             users.append(x[2])
     return users
 
@@ -46,18 +55,39 @@ def user_annot_info(username):
 
     """
     mycursor = mydb.cursor()
-
-    annot_info = {'annotated':0,'undone':0,'skipped':0}
+    status_types = ['annotated','undone','skipped']
+    annot_info = {'annotated':0,'served':0}
     
-    for status in annot_info:
+    for status in status_types:
         command = 'Select Count(file) from info Where username= %s  and status = %s;'
         args = (username,status)
         mycursor.execute(command,args)
         for x in mycursor:
-            annot_info[status]= x[0]
+            if status == 'annotated':
+
+                annot_info[status]= x[0]
+                annot_info['served'] += x[0]
+            else:
+                annot_info['served'] += x[0]
     return annot_info
 
-    
+def all_users_info():
+    raw_users = getRawUsers()
+    users_info_annotated = {}
+    users_info_served = {}
+    for user in raw_users:
+        info_dict = user_annot_info(user)
+        userl = user.lower()
+        if userl not in users_info_annotated:
+            users_info_annotated[userl] = info_dict['annotated']
+        else:
+            users_info_annotated[userl] += info_dict['annotated']
+        if userl not in users_info_served:
+            users_info_served[userl] = info_dict['served']
+        else:
+            users_info_served[userl] += info_dict['served']
+    return users_info_annotated , users_info_served
+        
     
 def count_ind_collections():
     """
@@ -300,5 +330,10 @@ def pagesPercentage():
             num_pages_total+= datailed_db_total[collection][book]
     return no_pages_completed
 
-def getIndUserStast():
-    
+def users_annot_count():
+    command = 'select count(*) from info where status = "annotated"'
+    mycursor = mydb.cursor()
+    mycursor.execute(command)
+    result =  mycursor.fetchone()
+    return result
+
