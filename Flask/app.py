@@ -9,6 +9,7 @@ import plotly.express as px
 import pandas as pd
 import sql_functions as sql
 import plotly.graph_objects as go
+import base64
 server = Flask(__name__,template_folder='templates')
 
 collectionsApp = dash.Dash(
@@ -34,13 +35,20 @@ annotationsApp = dash.Dash(
     
 )
 
+galleryApp = dash.Dash(
+    __name__,
+    server=server, 
+    routes_pathname_prefix="/galleryDash/",
+    external_stylesheets=[dbc.themes.BOOTSTRAP]
+    
+)
 
-# Collections:
 num_collections,num_books,num_pages= sql.get_db_stats()
 
 fig_collections_dial = go.Figure()
 
 # Collections
+
 fig_collections_dial.add_trace(
     go.Indicator(
     mode = "number",
@@ -145,14 +153,7 @@ def update_output(col_name):
     
     return fig_annot_pie
 
-#ANNOTATORS
-
-annotatorsApp.layout = html.Div([
-    html.H1('Annotators')
-])
-
-#ANNOTATIONS
-#COLLECTIONS
+# Annotations
 
 # num_collections = len(sql.count_ind_collections())
 collection_db = sql.count_ind_collections()
@@ -208,7 +209,6 @@ fig_annotated_dial.add_trace(
 )
 fig_annotated_dial_num = go.Figure()
 
-# Collections
 fig_annotated_dial_num.add_trace(
     go.Indicator(
     mode = "number",
@@ -420,6 +420,47 @@ def update_output(user_name):
         grid = {'rows': 1, 'columns': 2, 'pattern': "independent"})
     return fig
 
+#VIEWER
+
+im1 = "../../annot_test_dataset/penn_in_hand/illustrations/238.jpg"
+im2 = "../../annot_test_dataset/penn_in_hand/illustrations/126.jpg"
+im_64_1 = base64.b64encode(open(im1, 'rb').read()).decode('ascii')
+im_64_2 = base64.b64encode(open(im2, 'rb').read()).decode('ascii')
+
+
+galleryApp.layout = html.Div([
+    html.H1(children='Gallery Viewer'),
+
+    html.Div([
+        html.Img(
+            src='data:image/jpeg;base64,{}'.format(im_64_1),
+            style = {
+                'height': '40%',
+                'width': '40%',
+                'float': 'left',
+                'position': 'relative',
+                'padding-top': 0,
+                'padding-right': 0
+            }
+        )
+    ]),
+    html.Div([
+        html.Img(
+            src='data:image/jpeg;base64,{}'.format(im_64_2),
+            style = {
+                'height': '40%',
+                'width': '40%',
+                'float': 'left',
+                'position': 'relative',
+                'padding-top': 0,
+                'padding-right': 0
+            }
+        )
+    ])
+    
+])
+
+
 @server.route('/')
 def index():
     return render_template('index.html')
@@ -441,6 +482,10 @@ def annotators():
 def annotations():
     return render_template('annotations.html')
 
+@server.route('/gallery.html')
+def viewer():
+    return render_template('gallery.html')
+
 @server.route('/colDash/')
 def collectionsDash():
     return collectionsApp.layout()
@@ -448,3 +493,7 @@ def collectionsDash():
 @server.route('/annotatorsDash/')
 def annotatorsDash():
     return annotatorsApp.layout()
+
+@server.route('/galleryDash/')
+def galleryDash():
+    return galleryApp.layout()
