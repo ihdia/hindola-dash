@@ -37,3 +37,4 @@ urllib3==1.25.10
 Werkzeug==1.0.1
 xlrd==1.2.0
 zipp==3.1.0
+visdcc==0.0.40

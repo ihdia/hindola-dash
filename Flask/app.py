@@ -35,11 +35,16 @@ annotationsApp = dash.Dash(
     
 )
 
+external_scripts = [
+    {'src':'../assets/custom-script.js'}
+]
+
 galleryApp = dash.Dash(
     __name__,
     server=server, 
     routes_pathname_prefix="/galleryDash/",
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_scripts=external_scripts
     
 )
 
@@ -422,43 +427,106 @@ def update_output(user_name):
 
 #VIEWER
 
+RANGE=[0,1]
+
 im1 = "../../annot_test_dataset/penn_in_hand/illustrations/238.jpg"
 im2 = "../../annot_test_dataset/penn_in_hand/illustrations/126.jpg"
 im_64_1 = base64.b64encode(open(im1, 'rb').read()).decode('ascii')
 im_64_2 = base64.b64encode(open(im2, 'rb').read()).decode('ascii')
 
+galleryApp.layout = html.Div(children=[
 
-galleryApp.layout = html.Div([
-    html.H1(children='Gallery Viewer'),
-
-    html.Div([
-        html.Img(
-            src='data:image/jpeg;base64,{}'.format(im_64_1),
-            style = {
-                'height': '40%',
-                'width': '40%',
-                'float': 'left',
-                'position': 'relative',
-                'padding-top': 0,
-                'padding-right': 0
-            }
-        )
+    html.Div(children=[
+        html.H1(children='Annotation Viewer',style={"text-align":"center"}),
     ]),
+    
+    dcc.Dropdown(
+        id='img-dropdown',
+        options=[
+            {'label': 'book', 'value': 'book'},
+            {'label': 'date', 'value': 'date'}
+        ],
+        value='book'
+    ),
+    
+
     html.Div([
-        html.Img(
-            src='data:image/jpeg;base64,{}'.format(im_64_2),
-            style = {
-                'height': '40%',
-                'width': '40%',
-                'float': 'left',
-                'position': 'relative',
-                'padding-top': 0,
-                'padding-right': 0
+        # html.Div([
+        #     html.Img(
+        #         src='data:image/jpeg;base64,{}'.format(im_64_1),
+        #         id="doc-img",
+        #         style={"padding":"50px","height":"1000px","width":"800px"}
+        #     )
+        # ]),
+        dcc.Graph(
+            id='doc-img',
+            figure={
+                'data': [],
+                'layout': {
+                    'xaxis': {
+                        'range': RANGE,
+                        'showgrid' : False,
+                        'visible' : False,
+                        'zeroline' : False
+                    },
+                    'yaxis': {
+                        'range': RANGE,
+                        'showgrid' : False,
+                        'visible' : False,
+                        'zeroline' : False
+                    },
+                    'height': 900,
+                    'width' : 700,
+                    'images': [{
+                        'xref': 'x',
+                        'yref': 'y',
+                        'x': RANGE[0],
+                        'y': RANGE[1],
+                        'sizex': RANGE[1] - RANGE[0],
+                        'sizey': RANGE[1] - RANGE[0],
+                        'sizing': 'stretch',
+                        'layer': 'below',
+                        'source': 'data:image/jpeg;base64,{}'.format(im_64_1)
+                    }],
+                    'dragmode': 'select'  # or 'lasso'
+                }
             }
+        ),
+        html.Div(
+            children=[
+            html.H6("Hole(virtual)",id="hole-virtual"),
+            html.H6("Hole(physical)",id="hole-phy"),
+            html.H6("Character line segment",id="cls"),
+            html.H6("Boundary line",id="bl"),
+            html.H6("Physical Degradation",id="pd"),
+            html.H6("Page Boundary",id="pb"),
+            html.H6("Character Component",id="cc"),
+            html.H6("Library marker",id="lm"),
+            html.H6("Picture/Decorator",id="pic"),
+            ],
+            style={"text-align":"right"}
+        ),
+        html.Br(),
+        html.Br(),
+        html.Div(
+            children=[
+                html.Button("prev",id="prev-btn"),
+                html.Button("next",id="next-btn")
+            ],
+            style={"text-align":"right","padding":"25px"}
         )
-    ])
+    
+    ]),
     
 ])
+
+@galleryApp.callback(
+            Output("status", "children"),
+            [Input("prev-btn","value")]
+)
+
+def update_statusBar(val):
+    return "value: "+str(val)
 
 
 @server.route('/')

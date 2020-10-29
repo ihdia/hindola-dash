@@ -1,6 +1,51 @@
 body {
     font-family: sans-serif;
 }
-h1, h2, h3, h4, h5, h6 {
-    color: hotpink
+
+#doc-img {
+    height: 40%;
+    width: 40%;
+    float: left;
+    position: relative;
+    padding-top: 0;
+    padding-right: 20;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#hole-virtual{
+    color: red
+}
+
+#hole-phy{
+    color: yellow
+}
+
+#cls{
+    color: blue
+}
+
+#bl{
+    color: maroon
+}
+
+#pd {
+    color: darkgreen
+}
+
+#pb {
+    color: lime
+}
+
+#cc {
+    color: darkorchid
+}
+
+#lm {
+    color: magenta
+}
+
+#pic {
+    color: brown
 }
