@@ -482,8 +482,8 @@ galleryApp.layout = html.Div(children=[
         html.Br(),
         html.Div(
             children=[
-                html.Button("prev",id="prev-btn"),
-                html.Button("next",id="next-btn"),
+                html.Button("prev",id="prev_btn"),
+                html.Button("next",id="next_btn"),
                 html.Br(),
                 html.Br(),
                 html.Button("approve annotation",id="approve-btn",style={"background-color":"#4CAF50",
@@ -499,62 +499,25 @@ galleryApp.layout = html.Div(children=[
     
 ])
 
-# @galleryApp.callback(
-#             Output("doc-img", "figure"),
-#             [Input("prev-btn","n_clicks")]
-# )
-
-# def on_click_prev(n_clicks):
-#     global curr_ind
-#     curr_ind  = max(curr_ind-1,0)
-
-#     print(doc_list[curr_ind])
-
-#     img = cv.imread(doc_list[curr_ind])
-#     h,w,_ = img.shape
-#     print(h,w)
-
-#     # return dcc.Graph(
-#     # id='doc-img',
-#     return {'data': [],
-#         'layout': {
-#             'xaxis': {
-#                 'range': RANGE,
-#                 'showgrid' : False,
-#                 'visible' : False,
-#                 'zeroline' : False
-#             },
-#             'yaxis': {
-#                 'range': RANGE,
-#                 'showgrid' : False,
-#                 'visible' : False,
-#                 'zeroline' : False
-#             },
-#             'height': h,
-#             'width' : w,
-#             'images': [{
-#                 'xref': 'x',
-#                 'yref': 'y',
-#                 'x': RANGE[0],
-#                 'y': RANGE[1],
-#                 'sizex': RANGE[1] - RANGE[0],
-#                 'sizey': RANGE[1] - RANGE[0],
-#                 'sizing': 'stretch',
-#                 'layer': 'below',
-#                 'source': 'data:image/jpeg;base64,{}'.format(curr_img)
-#             }],
-#             'dragmode': 'select'  # or 'lasso'
-#         }
-#     }
-
 @galleryApp.callback(
             Output("doc-img", "figure"),
-            [Input("next-btn","n_clicks")]
+            [Input("next_btn","n_clicks"),Input("prev_btn","n_clicks")]
 )
 
-def on_click_next(n_clicks):
-    global curr_ind 
-    curr_ind  += 1 
+def on_click_next(next_btn,prev_btn):
+    ctx = dash.callback_context
+
+    if ctx.triggered:
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        print(button_id)
+
+    global curr_ind
+
+    if(button_id == "next_btn"):
+        curr_ind  += 1 
+    else:
+        curr_ind -= 1
+        
     curr_img = base64.b64encode(open(doc_list[curr_ind], 'rb').read()).decode('ascii')
     print(doc_list[curr_ind])
 
@@ -578,8 +541,8 @@ def on_click_next(n_clicks):
                 'visible' : False,
                 'zeroline' : False
             },
-            'height': h,
-            'width' : w,
+            'height': 900,
+            'width' : 800,
             'images': [{
                 'xref': 'x',
                 'yref': 'y',
