@@ -337,3 +337,13 @@ def users_annot_count():
     result =  mycursor.fetchone()
     return result
 
+
+def get_document_by_date():
+    command = 'select localurl from info order by date desc'
+    mycursor = mydb.cursor()
+    mycursor.execute(command)
+    docs = []
+    for x in mycursor:
+        if x[0].lower() not in docs:
+            docs.append(x[0])
+    return docs

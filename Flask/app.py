@@ -429,10 +429,11 @@ def update_output(user_name):
 
 RANGE=[0,1]
 
-im1 = "../../annot_test_dataset/penn_in_hand/illustrations/238.jpg"
-im2 = "../../annot_test_dataset/penn_in_hand/illustrations/126.jpg"
 im_64_1 = base64.b64encode(open(im1, 'rb').read()).decode('ascii')
 im_64_2 = base64.b64encode(open(im2, 'rb').read()).decode('ascii')
+
+doc_list = sql.get_document_by_date()
+curr_ind = 0
 
 galleryApp.layout = html.Div(children=[
 
@@ -459,38 +460,7 @@ galleryApp.layout = html.Div(children=[
         #     )
         # ]),
         dcc.Graph(
-            id='doc-img',
-            figure={
-                'data': [],
-                'layout': {
-                    'xaxis': {
-                        'range': RANGE,
-                        'showgrid' : False,
-                        'visible' : False,
-                        'zeroline' : False
-                    },
-                    'yaxis': {
-                        'range': RANGE,
-                        'showgrid' : False,
-                        'visible' : False,
-                        'zeroline' : False
-                    },
-                    'height': 900,
-                    'width' : 700,
-                    'images': [{
-                        'xref': 'x',
-                        'yref': 'y',
-                        'x': RANGE[0],
-                        'y': RANGE[1],
-                        'sizex': RANGE[1] - RANGE[0],
-                        'sizey': RANGE[1] - RANGE[0],
-                        'sizing': 'stretch',
-                        'layer': 'below',
-                        'source': 'data:image/jpeg;base64,{}'.format(im_64_1)
-                    }],
-                    'dragmode': 'select'  # or 'lasso'
-                }
-            }
+            id='doc-img'
         ),
         html.Div(
             children=[
@@ -511,7 +481,13 @@ galleryApp.layout = html.Div(children=[
         html.Div(
             children=[
                 html.Button("prev",id="prev-btn"),
-                html.Button("next",id="next-btn")
+                html.Button("next",id="next-btn"),
+                html.Br(),
+                html.Button("approve annotation",id="approve-btn",style={"background-color":"#4CAF50",
+                "color": "white"}),
+                html.Br(),
+                html.Button("send for re-annotation",id="reannotate-btn",style={"background-color":"#FF0000",
+                "color": "white"})
             ],
             style={"text-align":"right","padding":"25px"}
         )
@@ -521,12 +497,84 @@ galleryApp.layout = html.Div(children=[
 ])
 
 @galleryApp.callback(
-            Output("status", "children"),
-            [Input("prev-btn","value")]
+            Output("doc-img", "figure"),
+            [Input("prev-btn","n_clicks")]
 )
 
-def update_statusBar(val):
-    return "value: "+str(val)
+def on_click_prev(n_clicks):
+    # return dcc.Graph(
+    # id='doc-img',
+    return {'data': [],
+        'layout': {
+            'xaxis': {
+                'range': RANGE,
+                'showgrid' : False,
+                'visible' : False,
+                'zeroline' : False
+            },
+            'yaxis': {
+                'range': RANGE,
+                'showgrid' : False,
+                'visible' : False,
+                'zeroline' : False
+            },
+            'height': 900,
+            'width' : 800,
+            'images': [{
+                'xref': 'x',
+                'yref': 'y',
+                'x': RANGE[0],
+                'y': RANGE[1],
+                'sizex': RANGE[1] - RANGE[0],
+                'sizey': RANGE[1] - RANGE[0],
+                'sizing': 'stretch',
+                'layer': 'below',
+                'source': 'data:image/jpeg;base64,{}'.format(im_64_2)
+            }],
+            'dragmode': 'select'  # or 'lasso'
+        }
+    }
+
+# @galleryApp.callback(
+#             Output("doc-img", "figure"),
+#             [Input("next-btn","n_clicks")]
+# )
+
+# def on_click_next(n_clicks):
+#     # return dcc.Graph(
+#     # id='doc-img',
+#     return {'data': [],
+#         'layout': {
+#             'xaxis': {
+#                 'range': RANGE,
+#                 'showgrid' : False,
+#                 'visible' : False,
+#                 'zeroline' : False
+#             },
+#             'yaxis': {
+#                 'range': RANGE,
+#                 'showgrid' : False,
+#                 'visible' : False,
+#                 'zeroline' : False
+#             },
+#             'height': 900,
+#             'width' : 800,
+#             'images': [{
+#                 'xref': 'x',
+#                 'yref': 'y',
+#                 'x': RANGE[0],
+#                 'y': RANGE[1],
+#                 'sizex': RANGE[1] - RANGE[0],
+#                 'sizey': RANGE[1] - RANGE[0],
+#                 'sizing': 'stretch',
+#                 'layer': 'below',
+#                 'source': 'data:image/jpeg;base64,{}'.format(im_64_1)
+#             }],
+#             'dragmode': 'select'  # or 'lasso'
+#         }
+#     }
+
+
 
 
 @server.route('/')
