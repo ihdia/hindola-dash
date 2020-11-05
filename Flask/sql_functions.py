@@ -339,7 +339,7 @@ def users_annot_count():
 
 
 def get_document_by_date():
-    command = 'select localurl from info order by date desc'
+    command = 'select localurl from info where status = "annotated" order by date desc '
     mycursor = mydb.cursor()
     mycursor.execute(command)
     docs = []

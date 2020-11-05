@@ -440,7 +440,7 @@ curr_ind = 0
 galleryApp.layout = html.Div(children=[
 
     html.Div(children=[
-        html.H1(children='Annotation Viewer',style={"text-align":"center"}),
+        html.H1(children='Annotation Viewer',style={"text-align":"left"}),
     ]),
     
     dcc.Dropdown(
@@ -462,40 +462,47 @@ galleryApp.layout = html.Div(children=[
         #     )
         # ]),
         dcc.Graph(
-            id='doc-img'
-        ),
-        html.Div(
-            children=[
-            html.H6("Hole(virtual)",id="hole-virtual"),
-            html.H6("Hole(physical)",id="hole-phy"),
-            html.H6("Character line segment",id="cls"),
-            html.H6("Boundary line",id="bl"),
-            html.H6("Physical Degradation",id="pd"),
-            html.H6("Page Boundary",id="pb"),
-            html.H6("Character Component",id="cc"),
-            html.H6("Library marker",id="lm"),
-            html.H6("Picture/Decorator",id="pic"),
-            ],
-            style={"text-align":"right"}
-        ),
-        html.Br(),
-        html.Br(),
-        html.Div(
-            children=[
-                html.Button("prev",id="prev_btn"),
-                html.Button("next",id="next_btn"),
-                html.Br(),
-                html.Br(),
-                html.Button("approve annotation",id="approve-btn",style={"background-color":"#4CAF50",
-                "color": "white"}),
-                html.Br(),
-                html.Button("send for re-annotation",id="reannotate-btn",style={"background-color":"#FF0000",
-                "color": "white"})
-            ],
-            style={"text-align":"right","padding":"25px"}
+            id='doc-img',    
         )
+
+        # html.H6("Hole(virtual)",id="hole-virtual"),
+        # html.H6("Hole(physical)",id="hole-phy"),
+        # html.H6("Character line segment",id="cls"),
+        # html.H6("Boundary line",id="bl"),
+        # html.H6("Physical Degradation",id="pd"),
+        # html.H6("Page Boundary",id="pb"),
+        # html.H6("Character Component",id="cc"),
+        # html.H6("Library marker",id="lm"),
+        # html.H6("Picture/Decorator",id="pic"),
+
+        # # html.Div(
+        # #     children=[
+        # #     # html.H6("Hole(virtual)",id="hole-virtual"),
+        # #     # html.H6("Hole(physical)",id="hole-phy"),
+        # #     # html.H6("Character line segment",id="cls"),
+        # #     # html.H6("Boundary line",id="bl"),
+        # #     # html.H6("Physical Degradation",id="pd"),
+        # #     # html.H6("Page Boundary",id="pb"),
+        # #     # html.H6("Character Component",id="cc"),
+        # #     # html.H6("Library marker",id="lm"),
+        # #     # html.H6("Picture/Decorator",id="pic"),
+        # #     ],
+        # # ),
     
     ]),
+
+    html.Br(),
+
+    html.Div([
+        html.Button("prev",id="prev_btn"),
+        html.Button("next",id="next_btn"),
+        html.Br(),
+        html.Br(),
+        html.Button("✓",id="approve_btn",style={"background-color":"#4CAF50",
+        "color": "white"}),
+        html.Button("x",id="reannotate_btn",style={"background-color":"#FF0000",
+        "color": "white"})
+    ],style={"padding":"25px"}),
     
 ])
 
@@ -541,8 +548,8 @@ def on_click_next(next_btn,prev_btn):
                 'visible' : False,
                 'zeroline' : False
             },
-            'height': 900,
-            'width' : 800,
+            'height': h,
+            'width' : w,
             'images': [{
                 'xref': 'x',
                 'yref': 'y',
@@ -558,9 +565,23 @@ def on_click_next(next_btn,prev_btn):
         }
     }
 
+@galleryApp.callback(
+            Output("dummy","value"),
+            [Input("approve_btn","n_clicks"),Input("reannotate_btn","n_clicks")]
+)
 
+def on_click_next(next_btn,prev_btn):
+    ctx = dash.callback_context
 
+    if ctx.triggered:
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
+    if(button_id == "approve_btn"):
+        # call sql function for approving 
+        pass
+    else:
+        # call sql function for sending back for re-annotation
+        pass
 @server.route('/')
 def index():
     return render_template('index.html')
