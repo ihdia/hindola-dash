@@ -11,6 +11,7 @@ import sql_functions as sql
 import plotly.graph_objects as go
 import base64
 import cv2 as cv
+from skimage import io
 
 server = Flask(__name__,template_folder='templates')
 
@@ -276,7 +277,7 @@ annotationsApp.layout = html.Div([
         dcc.Graph(
         id='Annotations',
         figure=fig
-    )
+    )   
     ]),
     html.Div([
         dcc.Dropdown(
@@ -437,32 +438,44 @@ RANGE=[0,1]
 doc_list = sql.get_document_by_date()
 curr_ind = 0
 
+sql.reviewed_image_annotation(doc_list[curr_ind])
+
+img = io.imread(doc_list[curr_ind])
+fig = px.imshow(img)
+
+
 galleryApp.layout = html.Div(children=[
 
     html.Div(children=[
         html.H1(children='Annotation Viewer',style={"text-align":"left"}),
     ]),
     
-    dcc.Dropdown(
-        id='img-dropdown',
-        options=[
-            {'label': 'book', 'value': 'book'},
-            {'label': 'date', 'value': 'date'}
-        ],
-        value='book'
-    ),
+    # dcc.Dropdown(
+    #     id='img-dropdown',
+    #     options=[
+    #         {'label': 'book', 'value': 'book'},
+    #         {'label': 'date', 'value': 'date'}
+    #     ],
+    #     value='book'
+    # ),
+
+    html.Button("prev",id="prev_btn"),
+    html.Button("next",id="next_btn"),
+    html.Br(),
+    html.Br(),
+    # html.Button("✓",id="approve_btn",style={"background-color":"#4CAF50",
+    # "color": "white"}),
+    html.H6("Reject annotation"),
+    html.Button("x",id="reject_btn",style={"background-color":"#FF0000",
+    "color": "white"}),
+    html.P(id="dummy"),
     
 
     html.Div([
-        # html.Div([
-        #     html.Img(
-        #         src='data:image/jpeg;base64,{}'.format(im_64_1),
-        #         id="doc-img",
-        #         style={"padding":"50px","height":"1000px","width":"800px"}
-        #     )
-        # ]),
+
         dcc.Graph(
-            id='doc-img',    
+            id='doc-img',
+            figure=fig    
         )
 
         # html.H6("Hole(virtual)",id="hole-virtual"),
@@ -474,46 +487,22 @@ galleryApp.layout = html.Div(children=[
         # html.H6("Character Component",id="cc"),
         # html.H6("Library marker",id="lm"),
         # html.H6("Picture/Decorator",id="pic"),
-
-        # # html.Div(
-        # #     children=[
-        # #     # html.H6("Hole(virtual)",id="hole-virtual"),
-        # #     # html.H6("Hole(physical)",id="hole-phy"),
-        # #     # html.H6("Character line segment",id="cls"),
-        # #     # html.H6("Boundary line",id="bl"),
-        # #     # html.H6("Physical Degradation",id="pd"),
-        # #     # html.H6("Page Boundary",id="pb"),
-        # #     # html.H6("Character Component",id="cc"),
-        # #     # html.H6("Library marker",id="lm"),
-        # #     # html.H6("Picture/Decorator",id="pic"),
-        # #     ],
-        # # ),
-    
     ]),
 
     html.Br(),
-
-    html.Div([
-        html.Button("prev",id="prev_btn"),
-        html.Button("next",id="next_btn"),
-        html.Br(),
-        html.Br(),
-        html.Button("✓",id="approve_btn",style={"background-color":"#4CAF50",
-        "color": "white"}),
-        html.Button("x",id="reannotate_btn",style={"background-color":"#FF0000",
-        "color": "white"})
-    ],style={"padding":"25px"}),
     
 ])
 
 @galleryApp.callback(
             Output("doc-img", "figure"),
-            [Input("next_btn","n_clicks"),Input("prev_btn","n_clicks")]
+            [Input("next_btn","n_clicks"),Input("prev_btn","n_clicks")
+            ,Input("reject_btn","n_clicks")]
 )
 
-def on_click_next(next_btn,prev_btn):
+def on_click_next(next_btn,prev_btn,reject_btn):
     ctx = dash.callback_context
 
+    button_id=""
     if ctx.triggered:
         button_id = ctx.triggered[0]['prop_id'].split('.')[0]
         print(button_id)
@@ -521,67 +510,95 @@ def on_click_next(next_btn,prev_btn):
     global curr_ind
 
     if(button_id == "next_btn"):
+        #implicit annotation approval
+        sql.accept_image_annotation(doc_list[curr_ind])
         curr_ind  += 1 
-    else:
+        sql.reviewed_image_annotation(doc_list[curr_ind])
+    elif button_id=="prev_btn":
         curr_ind -= 1
+    elif button_id=="reject_btn":
+        sql.reject_image_annotation(doc_list[curr_ind])
+        curr_ind+=1
+
         
-    curr_img = base64.b64encode(open(doc_list[curr_ind], 'rb').read()).decode('ascii')
+    # curr_img = base64.b64encode(open(doc_list[curr_ind], 'rb').read()).decode('ascii')
     print(doc_list[curr_ind])
 
-    img = cv.imread(doc_list[curr_ind])
-    h,w,_ = img.shape
-    print(h,w)
+    # img = cv.imread(doc_list[curr_ind])
+    # h,w,_ = img.shape
+    # print(h,w)
+
+    img = io.imread(doc_list[curr_ind])
+    fig = px.imshow(img)
+
+    return fig
 
     # return dcc.Graph(
     # id='doc-img',
-    return {'data': [],
-        'layout': {
-            'xaxis': {
-                'range': RANGE,
-                'showgrid' : False,
-                'visible' : False,
-                'zeroline' : False
-            },
-            'yaxis': {
-                'range': RANGE,
-                'showgrid' : False,
-                'visible' : False,
-                'zeroline' : False
-            },
-            'height': h,
-            'width' : w,
-            'images': [{
-                'xref': 'x',
-                'yref': 'y',
-                'x': RANGE[0],
-                'y': RANGE[1],
-                'sizex': RANGE[1] - RANGE[0],
-                'sizey': RANGE[1] - RANGE[0],
-                'sizing': 'stretch',
-                'layer': 'below',
-                'source': 'data:image/jpeg;base64,{}'.format(curr_img)
-            }],
-            'dragmode': 'select'  # or 'lasso'
-        }
-    }
+    # return {'data': [],
+    #     'layout': {
+    #         'xaxis': {
+    #             'range': RANGE,
+    #             'showgrid' : False,
+    #             'visible' : False,
+    #             'zeroline' : False
+    #         },
+    #         'yaxis': {
+    #             'range': RANGE,
+    #             'showgrid' : False,
+    #             'visible' : False,
+    #             'zeroline' : False
+    #         },
+    #         'height': h,
+    #         'width' : w,
+    #         'images': [{
+    #             'xref': 'x',
+    #             'yref': 'y',
+    #             'x': RANGE[0],
+    #             'y': RANGE[1],
+    #             'sizex': RANGE[1] - RANGE[0],
+    #             'sizey': RANGE[1] - RANGE[0],
+    #             'sizing': 'stretch',
+    #             'layer': 'below',
+    #             'source': 'data:image/jpeg;base64,{}'.format(curr_img)
+    #         }],
+    #         'dragmode': 'select'  # or 'lasso'
+    #     }
+    # }
 
-@galleryApp.callback(
-            Output("dummy","value"),
-            [Input("approve_btn","n_clicks"),Input("reannotate_btn","n_clicks")]
-)
+# @galleryApp.callback(
+#             Output("dummy","value"),
+#             [Input("reject_btn","n_clicks")]#,Input("approve_btn","n_clicks")]
+# )
 
-def on_click_next(next_btn,prev_btn):
-    ctx = dash.callback_context
+# def on_click_reject(reject_btn):
+#     global curr_ind
 
-    if ctx.triggered:
-        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+#     ctx = dash.callback_context
 
-    if(button_id == "approve_btn"):
-        # call sql function for approving 
-        pass
-    else:
-        # call sql function for sending back for re-annotation
-        pass
+#     if ctx.triggered:
+#         button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+#     if button_id == "reject_btn":
+#         sql.reject_image_annotation(doc_list[curr_ind])
+#         curr_ind+=1
+
+
+# def on_click_next(next_btn,prev_btn):
+#     ctx = dash.callback_context
+
+#     if ctx.triggered:
+#         button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+#     if(button_id == "approve_btn"):
+#         # call sql function for approving 
+#         sql.accept_image_annotation(doc_list[curr_ind])
+#         print(doc_list[curr_ind])
+#     else:
+#         # call sql function for sending back for re-annotation
+#         sql.reject_image_annotation(doc_list[curr_ind])
+
+
 @server.route('/')
 def index():
     return render_template('index.html')

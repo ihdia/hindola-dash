@@ -347,3 +347,43 @@ def get_document_by_date():
         if x[0].lower() not in docs:
             docs.append(x[0])
     return docs
+
+def accept_image_annotation(fileurl):
+    mycursor = mydb.cursor()
+    fileurl = "/".join(fileurl.split("/")[2:])
+    command = "UPDATE json_v2 SET reviewed=1 where fileurl = '{}'".format(fileurl)
+    # sql = '''UPDATE json_v2 SET reviewed=NULL where fileurl = 'static/imgdata/Bhoomi_data/ANINGYA VYAKHYA/SVUORI/4378/14.jpg''''
+    print(command)
+    # args = (fileurl)
+        
+    mycursor.execute(command)
+    mydb.commit()
+
+def reject_image_annotation(fileurl):
+    mycursor = mydb.cursor()
+    fileurl = "/".join(fileurl.split("/")[2:])
+    command = "UPDATE json_v2 SET reviewed=-1 where fileurl = '{}'".format(fileurl)
+    # sql = '''UPDATE json_v2 SET reviewed=NULL where fileurl = 'static/imgdata/Bhoomi_data/ANINGYA VYAKHYA/SVUORI/4378/14.jpg''''
+    # print(command)
+        
+    mycursor.execute(command)
+    mydb.commit()
+
+def reviewed_image_annotation(fileurl):
+    mycursor = mydb.cursor()
+    fileurl = "/".join(fileurl.split("/")[2:])
+    command = "UPDATE json_v2 SET reviewed=0 where fileurl = '{}'".format(fileurl)
+    # sql = '''UPDATE json_v2 SET reviewed=NULL where fileurl = 'static/imgdata/Bhoomi_data/ANINGYA VYAKHYA/SVUORI/4378/14.jpg''''
+    # print(command)
+            
+    mycursor.execute(command)
+    mydb.commit()    
+
+'''
+reviewing system:
+
+NULL - not reviewed
+-1 - rejected
+0 - reviewed but not approved
+1 - accepted
+'''
