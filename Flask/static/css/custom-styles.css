@@ -1,0 +1,6 @@
+.graph-content iframe{
+    width: 100%;
+    height: 630vh;
+    border: 50px;
+    overflow: hidden;
+}
