@@ -20,7 +20,7 @@ gevent-websocket==0.10.1
 greenlet==0.4.15
 idna==2.8
 itsdangerous==1.1.0
-Jinja2==2.10
+Jinja2==2.11.3
 lazy==1.4
 Mako==1.0.7
 MarkupSafe==1.1.1
